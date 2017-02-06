@@ -602,6 +602,7 @@ namespace LetsEncrypt.ACME.Simple
 
         public static void Auto(Target binding)
         {
+			Log.Information("Auto: "+binding);
             var auth = Authorize(binding);
             if (auth.Status == "valid")
             {

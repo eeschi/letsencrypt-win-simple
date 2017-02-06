@@ -99,8 +99,11 @@ namespace LetsEncrypt.ACME.Simple
 
             target.Valid = false;
             if (Program.ManualSanMode) {
-                if (target.WebRootPath == Program.Options.WebRoot) {
-                    lsDomains = Program.Options.ManualHost.Split(',');
+
+				Log.Information($" Program.ManualSanMode. target.WebRootPath={target.WebRootPath}. Program.Options.WebRoot={Program.Options.WebRoot}");
+				if (target.WebRootPath == Program.Options.WebRoot) {
+					Log.Information($"target.WebRootPath == Program.Options.WebRoot. Program.Options.ManualHost={Program.Options.ManualHost} ");
+					lsDomains = Program.Options.ManualHost.Split(',');
                     if (lsDomains.Length > 0 && lsDomains.Length <= 100) {
                         //Check that they're the same domains
                         target.Valid = (target.Host == lsDomains[0] &&
@@ -109,15 +112,19 @@ namespace LetsEncrypt.ACME.Simple
                 }
 
             } else {
-                //Check the renewal relates to the CLI's host and webroot
-                target.Valid = (target.Host == Program.Options.ManualHost &&
+
+				Log.Information($" Program.ManualSanMode = false " );
+				//Check the renewal relates to the CLI's host and webroot
+				target.Valid = (target.Host == Program.Options.ManualHost &&
                                     target.WebRootPath == Program.Options.WebRoot);
             }
             if (target.Valid ) {
-                Console.WriteLine($" Processing Manual Certificate Renewal...");
-                this.Auto(target);
-            }
-        }
+				Console.WriteLine($" Processing Manual Certificate Renewal...");
+				Log.Information($" Processing Manual Certificate Renewal. "+target);
+				this.Auto(target);
+			}
+			Log.Information($"Not Processing Manual Certificate Renewal b/c !target.valid. " + target);
+		}
 
         public override void PrintMenu() {
             if (!Program.Options.San) {
